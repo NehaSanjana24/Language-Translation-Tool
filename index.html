@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neha's Mobile AI Translator</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Mobile touch improvements */
+        textarea, select, button { -webkit-tap-highlight-color: transparent; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans antialiased">
+
+    <nav class="bg-slate-800 border-b border-slate-700 px-4 py-3 flex items-center justify-between shadow-md sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <i data-lucide="globe" class="text-blue-500 w-5 h-5"></i>
+            <span class="text-lg font-bold tracking-wide text-white">Neha's <span class="text-blue-400 text-xs font-medium">AI</span></span>
+        </div>
+        <span class="text-[10px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full border border-slate-600">v3.5 Mobile</span>
+    </nav>
+
+    <main class="flex-1 max-w-xl w-full mx-auto p-4 flex flex-col justify-start justify-items-stretch gap-4">
+        
+        <div class="text-center py-2">
+            <h1 class="text-2xl font-extrabold text-white tracking-tight">Neural Mobile Web Hub</h1>
+            <p class="text-slate-400 text-xs mt-1">Instant Python-powered calculations layout.</p>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl p-4 flex flex-col gap-4">
+            
+            <div class="flex items-center justify-between gap-2 bg-slate-900/40 p-1.5 rounded-xl border border-slate-700/40">
+                <select id="sourceLang" class="w-2/5 bg-transparent text-white font-semibold text-sm outline-none px-2 py-1.5 cursor-pointer">
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                    <option value="it">Italian</option>
+                    <option value="ja">Japanese</option>
+                    <option value="zh">Chinese</option>
+                    <option value="hi">Hindi</option>
+                    <option value="ar">Arabic</option>
+                    <option value="te">Telugu</option>
+                </select>
+
+                <button id="swapBtn" class="p-2 bg-slate-700 hover:bg-slate-600 active:scale-90 rounded-full transition text-blue-400" title="Swap">
+                    <i data-lucide="arrow-left-right" class="w-4 h-4"></i>
+                </button>
+
+                <select id="targetLang" class="w-2/5 bg-transparent text-white font-semibold text-sm outline-none px-2 py-1.5 cursor-pointer text-right">
+                    <option value="es">Spanish</option>
+                    <option value="en">English</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                    <option value="it">Italian</option>
+                    <option value="ja">Japanese</option>
+                    <option value="zh">Chinese</option>
+                    <option value="hi">Hindi</option>
+                    <option value="ar">Arabic</option>
+                    <option value="te">Telugu</option>
+                </select>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <div class="bg-slate-900 border border-slate-700/60 rounded-xl p-3 flex flex-col gap-2 focus-within:border-blue-500/50 transition">
+                    <textarea id="inputText" class="w-full h-32 bg-transparent text-white placeholder-slate-500 outline-none resize-none text-base leading-relaxed" placeholder="Tap to enter text..."></textarea>
+                    <div class="flex justify-between items-center pt-2 border-t border-slate-800/60">
+                        <button id="speakInput" class="p-2 hover:bg-slate-800 active:bg-slate-800 rounded-lg text-slate-400 hover:text-slate-200" title="Speak">
+                            <i data-lucide="volume-2" class="w-4 h-4"></i>
+                        </button>
+                        <button id="translateBtn" class="bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold px-4 py-1.5 rounded-lg text-xs transition shadow-md">
+                            Translate
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 border border-slate-700/40 rounded-xl p-3 flex flex-col gap-2">
+                    <div id="outputText" class="w-full h-32 overflow-y-auto text-base text-slate-200 leading-relaxed whitespace-pre-wrap"><span class="text-slate-600 italic text-sm">Translations display here...</span></div>
+                    <div class="flex justify-start gap-1 pt-2 border-t border-slate-800/60">
+                        <button id="speakOutput" class="p-2 hover:bg-slate-800 active:bg-slate-800 rounded-lg text-slate-400 disabled:opacity-20" disabled>
+                            <i data-lucide="volume-2" class="w-4 h-4"></i>
+                        </button>
+                        <button id="copyBtn" class="p-2 hover:bg-slate-800 active:bg-slate-800 rounded-lg text-slate-400 disabled:opacity-20" disabled>
+                            <i data-lucide="copy" class="w-4 h-4" id="copyIcon"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-slate-950 border-t border-slate-800 py-3 text-center text-[10px] text-slate-500 sticky bottom-0">
+        © 2026 Neha's Translation Matrix Systems. 
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        const sourceLang = document.getElementById('sourceLang');
+        const targetLang = document.getElementById('targetLang');
+        const swapBtn = document.getElementById('swapBtn');
+        const inputText = document.getElementById('inputText');
+        const outputText = document.getElementById('outputText');
+        const translateBtn = document.getElementById('translateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const copyIcon = document.getElementById('copyIcon');
+        const speakInput = document.getElementById('speakInput');
+        const speakOutput = document.getElementById('speakOutput');
+
+        let activeTranslation = "";
+
+        async function performTranslation() {
+            const query = inputText.value.trim();
+            if (!query) return;
+
+            translateBtn.innerText = "Processing...";
+            translateBtn.disabled = true;
+
+            try {
+                // Communicates directly with your local python flask server endpoint
+                const res = await fetch('/api/translate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: query,
+                        langpair: `${sourceLang.value}|${targetLang.value}`
+                    })
+                });
+                const data = await res.json();
+                
+                if(data.responseData) {
+                    activeTranslation = data.responseData.translatedText;
+                    outputText.innerText = activeTranslation;
+                    outputText.classList.remove('text-slate-600', 'italic');
+                    
+                    copyBtn.disabled = false;
+                    speakOutput.disabled = false;
+                } else {
+                    outputText.innerText = "Backend processing error.";
+                }
+            } catch (err) {
+                outputText.innerText = "Could not link to Python backend.";
+            } finally {
+                translateBtn.innerText = "Translate";
+                translateBtn.disabled = false;
+            }
+        }
+
+        swapBtn.addEventListener('click', () => {
+            const tempLang = sourceLang.value;
+            sourceLang.value = targetLang.value;
+            targetLang.value = tempLang;
+            if(activeTranslation) {
+                const tempText = inputText.value;
+                inputText.value = activeTranslation;
+                outputText.innerText = tempText;
+                activeTranslation = tempText;
+            }
+        });
+
+        translateBtn.addEventListener('click', performTranslation);
+
+        copyBtn.addEventListener('click', () => {
+            if(!activeTranslation) return;
+            navigator.clipboard.writeText(activeTranslation);
+            copyIcon.setAttribute('data-lucide', 'check');
+            lucide.createIcons();
+            setTimeout(() => {
+                copyIcon.setAttribute('data-lucide', 'copy');
+                lucide.createIcons();
+            }, 1500);
+        });
+
+        function triggerSpeech(text, languageCode) {
+            if(!text || !text.trim()) return;
+            const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${languageCode}&client=tw-ob&q=${encodeURIComponent(text.trim())}`;
+            const audio = new Audio(audioUrl);
+            audio.play().catch(() => {});
+        }
+
+        speakInput.addEventListener('click', () => triggerSpeech(inputText.value, sourceLang.value));
+        speakOutput.addEventListener('click', () => triggerSpeech(activeTranslation, targetLang.value));
+    </script>
+</body>
+</html>
