@@ -120,14 +120,9 @@
 
             try {
                 // Communicates directly with your local python flask server endpoint
-                const res = await fetch('/api/translate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        text: query,
-                        langpair: `${sourceLang.value}|${targetLang.value}`
-                    })
-                });
+               
+                const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(query)}&langpair=${sourceLang.value}|${targetLang.value}`;
+                const res = await fetch(url);
                 const data = await res.json();
                 
                 if(data.responseData) {
