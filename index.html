@@ -25,7 +25,7 @@
     </nav>
 
     <!-- MAIN DASHBOARD CONTENT AREA -->
-    <main class="flex-1 max-w-xl w-full mx-auto p-4 flex flex-col justify-start justify-items-stretch gap-4">
+    <main class="flex-1 max-w-xl w-full mx-auto p-4 flex flex-col justify-start gap-4">
         
         <!-- Header Text -->
         <div class="text-center py-2">
@@ -56,8 +56,9 @@
                 </button>
 
                 <select id="targetLang" class="w-2/5 bg-transparent text-white font-semibold text-sm outline-none px-2 py-1.5 cursor-pointer text-right">
-                    <option value="es">Spanish</option>
+                    <option value="te">Telugu</option>
                     <option value="en">English</option>
+                    <option value="es">Spanish</option>
                     <option value="fr">French</option>
                     <option value="de">German</option>
                     <option value="it">Italian</option>
@@ -65,7 +66,6 @@
                     <option value="zh">Chinese</option>
                     <option value="hi">Hindi</option>
                     <option value="ar">Arabic</option>
-                    <option value="te">Telugu</option>
                 </select>
             </div>
 
@@ -87,7 +87,10 @@
 
                 <!-- Output Display Module -->
                 <div class="bg-slate-900/50 border border-slate-700/40 rounded-xl p-3 flex flex-col gap-2">
-                    <div id="outputText" class="w-full h-32 overflow-y-auto text-base text-slate-200 leading-relaxed whitespace-pre-wrap"><span class="text-slate-600 italic text-sm">Translations display here...</span></div>
+                    <!-- FIXED: Using inner container span element for safe cross-browser typography updates -->
+                    <div class="w-full h-32 overflow-y-auto text-base text-slate-200 leading-relaxed whitespace-pre-wrap">
+                        <span id="outputTarget" class="text-slate-600 italic text-sm">Translations display here...</span>
+                    </div>
                     <div class="flex justify-start gap-1 pt-2 border-t border-slate-800/60">
                         <button id="speakOutput" class="p-2 hover:bg-slate-800 active:bg-slate-800 rounded-lg text-slate-400 disabled:opacity-20" title="Listen Output" disabled>
                             <i data-lucide="volume-2" class="w-4 h-4"></i>
@@ -116,7 +119,7 @@
         const targetLang = document.getElementById('targetLang');
         const swapBtn = document.getElementById('swapBtn');
         const inputText = document.getElementById('inputText');
-        const outputText = document.getElementById('outputText');
+        const outputTarget = document.getElementById('outputTarget');
         const translateBtn = document.getElementById('translateBtn');
         const copyBtn = document.getElementById('copyBtn');
         const copyIcon = document.getElementById('copyIcon');
@@ -140,16 +143,18 @@
                 
                 if(data.responseData && data.responseData.translatedText) {
                     activeTranslation = data.responseData.translatedText;
-                    outputText.innerText = activeTranslation;
-                    outputText.classList.remove('text-slate-600', 'italic');
+                    
+                    // FIXED: Targeting textContent of specific typography block to prevent rendering structural crash anomalies
+                    outputTarget.textContent = activeTranslation;
+                    outputTarget.classList.remove('text-slate-600', 'italic', 'text-sm');
                     
                     copyBtn.disabled = false;
                     speakOutput.disabled = false;
                 } else {
-                    outputText.innerText = "Translation parsing error. Try another phrase.";
+                    outputTarget.textContent = "Translation parsing error. Try another phrase.";
                 }
             } catch (err) {
-                outputText.innerText = "Network timeout. Check your mobile internet connection.";
+                outputTarget.textContent = "Network timeout. Check your mobile internet connection.";
                 console.error(err);
             } finally {
                 translateBtn.innerText = "Translate";
@@ -165,7 +170,7 @@
             if(activeTranslation) {
                 const tempText = inputText.value;
                 inputText.value = activeTranslation;
-                outputText.innerText = tempText;
+                outputTarget.textContent = tempText;
                 activeTranslation = tempText;
             }
         });
@@ -184,13 +189,19 @@
             }, 1500);
         });
 
-        // Instant voice streaming component (Bypasses operating system hardware lag)
+        // FIXED: Enhanced Voice streaming component to natively map regional locales (e.g. te-IN)
         function triggerSpeech(text, languageCode) {
             if(!text || !text.trim()) return;
-            const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${languageCode}&client=tw-ob&q=${encodeURIComponent(text.trim())}`;
+            
+            // Format to explicit sub-tags to force deep engine synthesis on mobile architectures
+            let locale = languageCode;
+            if(languageCode === 'te') locale = 'te-IN';
+            if(languageCode === 'hi') locale = 'hi-IN';
+            
+            const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${locale}&client=tw-ob&q=${encodeURIComponent(text.trim())}`;
             const audio = new Audio(audioUrl);
             audio.play().catch((err) => {
-                console.log("Audio play request caught:", err);
+                console.log("Audio streaming framework note:", err);
             });
         }
 
