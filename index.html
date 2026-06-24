@@ -133,6 +133,8 @@
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
+                        // UPDATED MODEL NAME HERE
+                        model: "llama-3.1-8b-instant", 
                         messages: [
                             {
                                 role: "system",
@@ -145,7 +147,6 @@
                         ]
                     })
                 });
-
                 const data = await res.json();
                 
                 if (data && data.choices && data.choices[0]) {
