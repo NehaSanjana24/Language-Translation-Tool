@@ -12,7 +12,6 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans antialiased">
 
-    <!-- TOP NAVIGATION BAR -->
     <nav class="bg-slate-800 border-b border-slate-700 px-4 py-3 flex items-center justify-between shadow-md sticky top-0 z-50">
         <div class="flex items-center gap-2">
             <i data-lucide="globe" class="text-blue-500 w-5 h-5"></i>
@@ -21,7 +20,6 @@
         <span class="text-[10px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full border border-slate-600">v5.2 Cloud Gateway</span>
     </nav>
 
-    <!-- MAIN DASHBOARD CONTENT AREA -->
     <main class="flex-1 max-w-xl w-full mx-auto p-4 flex flex-col justify-start gap-4">
         
         <div class="text-center py-2">
@@ -31,7 +29,6 @@
 
         <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl p-4 flex flex-col gap-4">
             
-            <!-- Language Pickers Section -->
             <div class="flex items-center justify-between gap-2 bg-slate-900/40 p-1.5 rounded-xl border border-slate-700/40">
                 <select id="sourceLang" class="w-2/5 bg-transparent text-white font-semibold text-sm outline-none px-2 py-1.5 cursor-pointer">
                     <option value="English">English</option>
@@ -64,7 +61,6 @@
                 </select>
             </div>
 
-            <!-- Input and Output Segment Blocks -->
             <div class="flex flex-col gap-3">
                 <div class="bg-slate-900 border border-slate-700/60 rounded-xl p-3 flex flex-col gap-2 focus-within:border-blue-500/50 transition">
                     <textarea id="inputText" class="w-full h-32 bg-transparent text-white placeholder-slate-500 outline-none resize-none text-base leading-relaxed" placeholder="Tap to enter text..."></textarea>
@@ -103,7 +99,7 @@
     <script>
         lucide.createIcons();
 
-        // 🔗 PASTE YOUR COPIED CLOUDFLARE WORKER DEPLOYMENT LINK HERE
+        // 🔗 LIVE CLOUDFLARE WORKER DEPLOYMENT LINK
         const WORKER_URL = "https://groq-translate-proxy.mallipudi-nehasanjana.workers.dev/";
 
         const sourceLang = document.getElementById('sourceLang');
@@ -129,16 +125,10 @@
             const query = inputText.value.trim();
             if (!query) return;
 
-            if (WORKER_URL.includes("mallipudi-nehasanjana")) {
-                outputTarget.textContent = "Configuration Error: Please update the WORKER_URL value at line 108.";
-                return;
-            }
-
             translateBtn.innerText = "AI Processing...";
             translateBtn.disabled = true;
 
             try {
-                // Hits your secure backend shield instead of Groq directly
                 const res = await fetch(WORKER_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
