@@ -1,34 +1,44 @@
-# 🌐 Neha's Mobile AI Translator
+# Neural Mobile Web Hub: AI Translation Platform
 
-A sleek, responsive, full-stack language translation web application optimized for mobile and desktop screens. This project utilizes a **Python Flask backend** to route services and clean **HTML5, CSS3 (Tailwind Framework), and JavaScript** to render a high-fidelity frontend interface.
+A highly responsive, production-ready mobile-first web application that provides accurate, natural, and dialect-aware text translations across multiple languages—fully optimized for regional Indian languages like Telugu. 
 
-## 🚀 Live Demo
-You can view the static frontend deployment layout here:
-👉 [https://nehasanjana24.github.io/Language-Translation-Tool/](https://nehasanjana24.github.io/Language-Translation-Tool/)
+This platform leverages high-capacity LLM infrastructures on the backend via the Groq LPU Cloud Architecture to ensure sub-second response times, coupled with specialized contextual instruction injections to maintain precise grammatical pronoun alignments.
 
 ---
 
-## ✨ Features
-* **Multi-Language Support:** Translate between English, Spanish, French, German, Italian, Japanese, Chinese, Hindi, Arabic, and **Telugu**.
-* **One-Tap Language Swap:** Instantly invert source and target language parameters with their respective text boxes.
-* **Instant Audio Engine:** Integrated high-speed streaming Text-to-Speech (TTS) audio layer to speak translated phrases with zero delay.
-* **Clipboard Copy Utility:** Fast interactive action buttons featuring responsive confirmation checkmarks to copy outputs.
-* **Mobile-First Core:** Scaled grid structures with touch-active scaling designed to sit beautifully on smartphone viewports.
+## 🚀 Key Features
+
+* **Flagship AI Translation Engine:** Powered by the production-tier `llama-3.3-70b-versatile` model via Groq, ensuring optimal handling of complex sentences, idioms, and multi-clause phrasing.
+* **Contextual Dialogue Mapping:** Features a hardcoded example framework injected straight into the user-prompt payload. This effectively prevents common translation bugs like pronoun-swapping or literal word-for-word string processing in short conversational snippets (e.g., "how are you" or "I hate you").
+* **Instant, High-Clarity Audio (TTS):** Includes custom `window.speechSynthesis` caching routines that instantly clear previous playback pipelines, prevent clicking latency, and prioritize high-bitrate voice engines (such as Google Natural or premium local device packs).
+* **Sleek Mobile-First Interface:** A responsive dashboard styled with Tailwind CSS, featuring automatic language swapping, text copying, and dynamic UI states during network requests.
 
 ---
 
-## 🛠️ Tech Stack & Frameworks
-* **Frontend:** HTML5, Tailwind CSS v4 (via CDN), Lucide Web Icons
-* **Backend Runtime:** Python 3.x, Flask Web Framework
-* **APIs Used:** MyMemory Translation Matrix, Google TTS Delivery Edge Network
+## 🛠️ Architecture & Core Components
+
+### 1. Frontend Web Client (`index.html`)
+Handles user interactions, UI language states, browser clipboard integrations, and system-level audio streaming.
+
+### 2. Live API Gateway (`Render Backend`)
+Communicates seamlessly with a hosted endpoint to pass sanitized payloads directly to upstream LPU compute nodes securely:
+`https://groq-translation-backend.onrender.com/translate`
 
 ---
 
-## 💻 How to Run the App Locally
+## 💻 Tech Stack
 
-If you want to spin up the local server configuration on your machine, follow these simple terminal configurations:
+* **Frontend UI:** HTML5, CSS3, Tailwind CSS (via official script browser runtime)
+* **Iconography:** Lucide Icons Core Framework
+* **AI Model Engine:** Meta Llama 3.3 70B Versatile
+* **Hardware Accelerator:** Groq LPU (Language Processing Unit) Cloud API
+* **Deployment Hosting:** GitHub Pages (Frontend Hub) & Render (Backend Architecture Gateway)
 
-### 1. Clone the repository
-```bash
-git clone [https://github.com/nehasanjana24/Language-Translation-Tool.git](https://github.com/nehasanjana24/Language-Translation-Tool.git)
-cd Language-Translation-Tool
+---
+
+## 🔧 Getting Started & Local Setup
+
+1. **Clone the Repository:**
+   ```bash
+   git clone [https://github.com/nehasanjana24/Language-Translation-Tool.git](https://github.com/nehasanjana24/Language-Translation-Tool.git)
+   cd Language-Translation-Tool
