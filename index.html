@@ -133,18 +133,20 @@
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        // UPDATED MODEL NAME HERE
                         model: "llama-3.1-8b-instant", 
                         messages: [
                             {
                                 role: "system",
-                                content: `You are a professional translator. Translate the text directly from ${sourceLang.value} to ${targetLang.value}. Provide ONLY the translated result text. Do not add explanations or quotes.`
+                                // 1. Added explicit Telugu context constraints to the prompt
+                                content: `You are an expert, precise literal translator. Translate the text directly from ${sourceLang.value} to ${targetLang.value}. Use casual, standard conversational terms when translating to spoken languages like Telugu (e.g., 'how are you' should always be 'నువ్వు ఎలా ఉన్నావు?'). Output ONLY the raw translated text. Do not add explanations, notes, or punctuation marks like quotes.`
                             },
                             {
                                 role: "user",
                                 content: query
                             }
-                        ]
+                        ],
+                        // 2. Lock temperature to 0.0 so the answer is consistent and never changes!
+                        temperature: 0.0
                     })
                 });
                 const data = await res.json();
