@@ -150,24 +150,25 @@
                         ],
                         temperature: 0.0
                     })
-                });        
-        translateBtn.addEventListener('click', performTranslation);
-
-        copyBtn.addEventListener('click', async () => {
-            if (!activeTranslation) return;
-            try {
-                await navigator.clipboard.writeText(activeTranslation);
-                copyIcon.setAttribute('data-lucide', 'check');
-                lucide.createIcons();
-                setTimeout(() => {
-                    copyIcon.setAttribute('data-lucide', 'copy');
-                    lucide.createIcons();
-                }, 2000);
+                });
+                const data = await res.json();
+                
+                if (data && data.choices && data.choices[0]) {
+                    activeTranslation = data.choices[0].message.content.trim();
+                    outputTarget.textContent = activeTranslation;
+                    outputTarget.classList.remove('text-slate-600', 'italic', 'text-sm');
+                } else {
+                    outputTarget.textContent = "Error parsing response framework from backend.";
+                }
             } catch (err) {
+                outputTarget.textContent = "Backend communication error.";
                 console.error(err);
+            } finally {
+                translateBtn.innerText = "Translate";
+                translateBtn.disabled = false;
             }
-        });
-
+        }        
+        
         function handleSpeech(text, langName) {
             if (!window.speechSynthesis) return;
             window.speechSynthesis.cancel();
