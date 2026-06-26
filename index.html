@@ -139,9 +139,9 @@
                             {
                                 role: "system",
                                 content: `You are an expert conversational translator. Translate text from ${sourceLang.value} to ${targetLang.value}. 
-  CRITICAL RULES:
-  1. Pay strict attention to who is performing the action (subject) and who is receiving it (object). Do not swap pronouns. (e.g., "I hate you" means the speaker hates the listener: "నేనంటే నీకు ఇష్టం లేదు" or "నేను నిన్ను ద్వేషిస్తున్నాను").
-  2. Provide ONLY the natural, everyday spoken translation output text. No explanations, no markdown formatting, and no extra quotes.`
+                                CRITICAL RULES:
+                                1. Pay strict attention to who is performing the action (subject) and who is receiving it (object). Do not swap pronouns. (e.g., "I hate you" means the speaker hates the listener: "నేనంటే నీకు ఇష్టం లేదు" or "నేను నిన్ను ద్వేషిస్తున్నాను").
+                                2. Provide ONLY the natural, everyday spoken translation output text. No explanations, no markdown formatting, and no extra quotes.`
                             },
                             {
                                 role: "user",
@@ -150,7 +150,8 @@
                         ],
                         temperature: 0.0
                     })
-                });        translateBtn.addEventListener('click', performTranslation);
+                });        
+        translateBtn.addEventListener('click', performTranslation);
 
         copyBtn.addEventListener('click', async () => {
             if (!activeTranslation) return;
