@@ -205,28 +205,31 @@ ${query}`
                 console.error(err);
             }
         });
-
-        // 1. ONLY REPLACE THIS FUNCTION BLOCK 👇
         function handleSpeech(text, langName) {
             if (!window.speechSynthesis) return;
             
-            // Instantly stop any previous speech to clear the lag immediately
+            // Instantly clear the audio queue
             window.speechSynthesis.cancel();
             
             const langCode = ttsLanguageMap[langName] || 'en';
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = langCode;
             
-            // Adjust rate (speed) slightly for a clearer tone
-            utterance.rate = 0.95; 
+            // Slightly slowing down the speed makes Telugu sound significantly clearer
+            utterance.rate = 0.85; 
             utterance.pitch = 1.0;
 
-            // Search your device for a higher-quality native voice pack
+            // Deep scan for high-quality or natural voice engines
             const voices = window.speechSynthesis.getVoices();
             if (voices.length > 0) {
-                const bestVoice = voices.find(v => v.lang.startsWith(langCode) && !v.localService) || 
-                                  voices.find(v => v.lang.startsWith(langCode)) ||
-                                  voices.find(v => v.name.includes(langName));
+                const bestVoice = 
+                    // 1. Look for premium cloud-quality or Google voices for that language
+                    voices.find(v => v.lang.startsWith(langCode) && (v.name.includes('Google') || v.name.includes('Natural'))) ||
+                    // 2. Fallback to standard local high-quality voices
+                    voices.find(v => v.lang.startsWith(langCode) && !v.localService) || 
+                    // 3. Any voice matching the language code
+                    voices.find(v => v.lang.startsWith(langCode));
+                
                 if (bestVoice) {
                     utterance.voice = bestVoice;
                 }
@@ -234,7 +237,6 @@ ${query}`
 
             window.speechSynthesis.speak(utterance);
         }
-
         // KEEP THESE EXACTLY THE SAME AS THEY ARE 👇
         speakInput.addEventListener('click', () => {
             const text = inputText.value.trim();
