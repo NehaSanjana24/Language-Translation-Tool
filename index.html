@@ -206,15 +206,36 @@ ${query}`
             }
         });
 
+        // 1. ONLY REPLACE THIS FUNCTION BLOCK 👇
         function handleSpeech(text, langName) {
             if (!window.speechSynthesis) return;
+            
+            // Instantly stop any previous speech to clear the lag immediately
             window.speechSynthesis.cancel();
+            
             const langCode = ttsLanguageMap[langName] || 'en';
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = langCode;
+            
+            // Adjust rate (speed) slightly for a clearer tone
+            utterance.rate = 0.95; 
+            utterance.pitch = 1.0;
+
+            // Search your device for a higher-quality native voice pack
+            const voices = window.speechSynthesis.getVoices();
+            if (voices.length > 0) {
+                const bestVoice = voices.find(v => v.lang.startsWith(langCode) && !v.localService) || 
+                                  voices.find(v => v.lang.startsWith(langCode)) ||
+                                  voices.find(v => v.name.includes(langName));
+                if (bestVoice) {
+                    utterance.voice = bestVoice;
+                }
+            }
+
             window.speechSynthesis.speak(utterance);
         }
 
+        // KEEP THESE EXACTLY THE SAME AS THEY ARE 👇
         speakInput.addEventListener('click', () => {
             const text = inputText.value.trim();
             if (text) handleSpeech(text, sourceLang.value);
@@ -223,6 +244,11 @@ ${query}`
         speakOutput.addEventListener('click', () => {
             if (activeTranslation) handleSpeech(activeTranslation, targetLang.value);
         });
+
+        // 2. ADD THIS SMALL SNIPPET RIGHT BELOW THEM TO PRE-LOAD THE VOICES INSTANTLY 👇
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+        }
     </script>
 </body>
 </html>
