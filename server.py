@@ -11,10 +11,9 @@ GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 @app.route('/translate', methods=['POST'])
 def translate():
-    # Safely fetches the key from Render's Environment Variables
     api_key = os.environ.get("GROQ_API_KEY")
     if not api_key:
-        return jsonify({"error": "Backend configuration error: API Key missing on Render settings."}), 500
+        return jsonify({"error": "Backend configuration error: API Key missing on Render."}), 500
 
     try:
         data = request.json
@@ -23,11 +22,17 @@ def translate():
             "Content-Type": "application/json"
         }
         
-        # Forward the instructions directly to the Groq Llama-3 compiler
+        # Forward data to Groq
         response = requests.post(GROQ_API_URL, json=data, headers=headers)
-        return jsonify(response.json()), response.status_code
+        response_data = response.json()
+
+        # 🔍 THIS LINE IS THE FIX: It prints Groq's exact reply to your Render terminal logs!
+        print("--- GROQ RESPONSE LOG ---", response_data)
+
+        return jsonify(response_data), response.status_code
 
     except Exception as e:
+        print("--- BACKEND EXCEPTION ---", str(e))
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
