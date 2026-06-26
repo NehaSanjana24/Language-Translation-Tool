@@ -140,15 +140,17 @@
                         model: "llama-3.3-70b-versatile", 
                         messages: [
                             {
-                                role: "system",
-                                content: `You are an expert conversational translator fluent in all regional dialects. Translate text directly from ${sourceLang.value} to ${targetLang.value}.
-CRITICAL RULES:
-1. Pay strict attention to who is performing the action (subject) and who is receiving it (object). Do not jumble or swap pronouns. For example: "I hate you" means the speaker hates the listener. In Telugu, this must be "నేనంటే నీకు ఇష్టం లేదు" or "నేను నిన్ను ద్వేషిస్తున్నాను". 
-2. Provide ONLY the natural, conversational everyday translation output text. Do not include markdown, explanations, notes, or extra quotes.`
-                            },
-                            {
                                 role: "user",
-                                content: query
+                                content: `Task: Translate the following text directly from ${sourceLang.value} to ${targetLang.value}.
+
+Strict Rules:
+1. Output ONLY the raw conversational translation text. Absolutely no explanations, no notes, no markdown formatting, and no quotation marks.
+2. Maintain exact pronoun orientation (Subject/Object). Do not swap who is doing the action.
+   - Example: "how are you?" must always be translated as "నువ్వు ఎలా ఉన్నావు?" (Not "నేను ఎలా ఉన్నాను").
+   - Example: "I hate you" must always be translated as "నేనంటే నీకు ఇష్టం లేదు".
+
+Text to translate:
+${query}`
                             }
                         ],
                         temperature: 0.0
