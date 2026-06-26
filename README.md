@@ -4,6 +4,9 @@ A highly responsive, production-ready mobile-first web application that provides
 
 This platform leverages high-capacity LLM infrastructures on the backend via the Groq LPU Cloud Architecture to ensure sub-second response times, coupled with specialized contextual instruction injections to maintain precise grammatical pronoun alignments.
 
+### 🌐 Live Application Link
+Experience the live application here: **[https://nehasanjana24.github.io/Language-Translation-Tool/](https://nehasanjana24.github.io/Language-Translation-Tool/)**
+
 ---
 
 ## 🚀 Key Features
