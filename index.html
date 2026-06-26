@@ -12,6 +12,7 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans antialiased">
 
+    <!-- TOP NAVIGATION BAR -->
     <nav class="bg-slate-800 border-b border-slate-700 px-4 py-3 flex items-center justify-between shadow-md sticky top-0 z-50">
         <div class="flex items-center gap-2">
             <i data-lucide="globe" class="text-blue-500 w-5 h-5"></i>
@@ -20,15 +21,17 @@
         <span class="text-[10px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full border border-slate-600">v6.0 Live Gateway</span>
     </nav>
 
+    <!-- MAIN DASHBOARD CONTENT AREA -->
     <main class="flex-1 max-w-xl w-full mx-auto p-4 flex flex-col justify-start gap-4">
         
         <div class="text-center py-2">
             <h1 class="text-2xl font-extrabold text-white tracking-tight">Neural Mobile Web Hub</h1>
-            <p class="text-slate-400 text-xs mt-1">Deep Learning Translations via Groq Llama-3 Engine.</p>
+            <p class="text-slate-400 text-xs mt-1">Deep Learning Translations via Groq Engine.</p>
         </div>
 
         <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl p-4 flex flex-col gap-4">
             
+            <!-- Language Pickers Section -->
             <div class="flex items-center justify-between gap-2 bg-slate-900/40 p-1.5 rounded-xl border border-slate-700/40">
                 <select id="sourceLang" class="w-2/5 bg-transparent text-white font-semibold text-sm outline-none px-2 py-1.5 cursor-pointer">
                     <option value="English">English</option>
@@ -61,6 +64,7 @@
                 </select>
             </div>
 
+            <!-- Input and Output Segment Blocks -->
             <div class="flex flex-col gap-3">
                 <div class="bg-slate-900 border border-slate-700/60 rounded-xl p-3 flex flex-col gap-2 focus-within:border-blue-500/50 transition">
                     <textarea id="inputText" class="w-full h-32 bg-transparent text-white placeholder-slate-500 outline-none resize-none text-base leading-relaxed" placeholder="Tap to enter text..."></textarea>
@@ -99,7 +103,7 @@
     <script>
         lucide.createIcons();
 
-        // Connected directly to your live Render backend URL
+        // Linked directly to your active Render web service gateway
         const BACKEND_URL = "https://groq-translation-backend.onrender.com/translate";
 
         const sourceLang = document.getElementById('sourceLang');
@@ -133,15 +137,14 @@
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        // Switched to a higher tier model with better Telugu accuracy
                         model: "llama-3.3-70b-versatile", 
                         messages: [
                             {
                                 role: "system",
-                                content: `You are an expert conversational translator. Translate text from ${sourceLang.value} to ${targetLang.value}. 
-                                CRITICAL RULES:
-                                1. Pay strict attention to who is performing the action (subject) and who is receiving it (object). Do not swap pronouns. (e.g., "I hate you" means the speaker hates the listener: "నేనంటే నీకు ఇష్టం లేదు" or "నేను నిన్ను ద్వేషిస్తున్నాను").
-                                2. Provide ONLY the natural, everyday spoken translation output text. No explanations, no markdown formatting, and no extra quotes.`
+                                content: `You are an expert conversational translator fluent in all regional dialects. Translate text directly from ${sourceLang.value} to ${targetLang.value}.
+CRITICAL RULES:
+1. Pay strict attention to who is performing the action (subject) and who is receiving it (object). Do not jumble or swap pronouns. For example: "I hate you" means the speaker hates the listener. In Telugu, this must be "నేనంటే నీకు ఇష్టం లేదు" or "నేను నిన్ను ద్వేషిస్తున్నాను". 
+2. Provide ONLY the natural, conversational everyday translation output text. Do not include markdown, explanations, notes, or extra quotes.`
                             },
                             {
                                 role: "user",
@@ -151,6 +154,7 @@
                         temperature: 0.0
                     })
                 });
+
                 const data = await res.json();
                 
                 if (data && data.choices && data.choices[0]) {
@@ -167,8 +171,38 @@
                 translateBtn.innerText = "Translate";
                 translateBtn.disabled = false;
             }
-        }        
-        
+        }
+
+        swapBtn.addEventListener('click', () => {
+            const tempLang = sourceLang.value;
+            sourceLang.value = targetLang.value;
+            targetLang.value = tempLang;
+            
+            if (activeTranslation) {
+                const tempText = inputText.value;
+                inputText.value = activeTranslation;
+                outputTarget.textContent = tempText;
+                activeTranslation = tempText;
+            }
+        });
+
+        translateBtn.addEventListener('click', performTranslation);
+
+        copyBtn.addEventListener('click', async () => {
+            if (!activeTranslation) return;
+            try {
+                await navigator.clipboard.writeText(activeTranslation);
+                copyIcon.setAttribute('data-lucide', 'check');
+                lucide.createIcons();
+                setTimeout(() => {
+                    copyIcon.setAttribute('data-lucide', 'copy');
+                    lucide.createIcons();
+                }, 2000);
+            } catch (err) {
+                console.error(err);
+            }
+        });
+
         function handleSpeech(text, langName) {
             if (!window.speechSynthesis) return;
             window.speechSynthesis.cancel();
