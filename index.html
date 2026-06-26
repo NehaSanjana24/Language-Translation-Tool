@@ -158,7 +158,7 @@
                 }
             } catch (err) {
                 // Render sleeps when inactive. This handles the spin-up error gracefully.
-                outputTarget.textContent = "Backend engine wake-up process initiated. Please wait 30 seconds if this is the first boot.";
+                outputTarget.textContent = "Backend communication error.";
                 console.error(err);
             } finally {
                 translateBtn.innerText = "Translate";
