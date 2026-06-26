@@ -133,60 +133,24 @@
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        model: "llama-3.1-8b-instant", 
+                        // Switched to a higher tier model with better Telugu accuracy
+                        model: "llama-3.3-70b-specdec", 
                         messages: [
                             {
                                 role: "system",
-                                // 1. Added explicit Telugu context constraints to the prompt
-                                content:`You are a native human translator fluent in all conversational dialects. Translate the text directly from ${sourceLang.value} to ${targetLang.value}. 
-                                CRITICAL RULE: Translate the actual *meaning and sentiment* of the full sentence as used in everyday speech, NOT a literal word-for-word translation. 
-                                For example: 
-                                - 'how are you' must be 'నువ్వు ఎలా ఉన్నావు?'
-                                - 'I love you' must be 'నేను నిన్ను ప్రేమిస్తున్నాను'
-                                Output ONLY the raw conversational translation. Absolutely no explanations, no notes, and no quotes.`
+                                content: `You are an expert conversational translator. Translate text from ${sourceLang.value} to ${targetLang.value}. 
+  CRITICAL RULES:
+  1. Pay strict attention to who is performing the action (subject) and who is receiving it (object). Do not swap pronouns. (e.g., "I hate you" means the speaker hates the listener: "నేనంటే నీకు ఇష్టం లేదు" or "నేను నిన్ను ద్వేషిస్తున్నాను").
+  2. Provide ONLY the natural, everyday spoken translation output text. No explanations, no markdown formatting, and no extra quotes.`
                             },
                             {
                                 role: "user",
                                 content: query
                             }
                         ],
-                        // 2. Lock temperature to 0.0 so the answer is consistent and never changes!
                         temperature: 0.0
                     })
-                });
-                const data = await res.json();
-                
-                if (data && data.choices && data.choices[0]) {
-                    activeTranslation = data.choices[0].message.content.trim();
-                    outputTarget.textContent = activeTranslation;
-                    outputTarget.classList.remove('text-slate-600', 'italic', 'text-sm');
-                } else {
-                    outputTarget.textContent = "Error parsing response framework from backend.";
-                }
-            } catch (err) {
-                // Render sleeps when inactive. This handles the spin-up error gracefully.
-                outputTarget.textContent = "Backend communication error.";
-                console.error(err);
-            } finally {
-                translateBtn.innerText = "Translate";
-                translateBtn.disabled = false;
-            }
-        }
-
-        swapBtn.addEventListener('click', () => {
-            const tempLang = sourceLang.value;
-            sourceLang.value = targetLang.value;
-            targetLang.value = tempLang;
-            
-            if (activeTranslation) {
-                const tempText = inputText.value;
-                inputText.value = activeTranslation;
-                outputTarget.textContent = tempText;
-                activeTranslation = tempText;
-            }
-        });
-
-        translateBtn.addEventListener('click', performTranslation);
+                });        translateBtn.addEventListener('click', performTranslation);
 
         copyBtn.addEventListener('click', async () => {
             if (!activeTranslation) return;
